@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<style type="text/css">
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    table,
+    td {
+        border: 1px solid #333;
+    }
+
+    thead,
+    tfoot {
+        background-color: #333;
+        color: #fff;
+    }
+    .clint-table{
+        width: 1500px;
+    }
+    .update-clint-table{
+        width: 1500px;
+    }
+
+
+
+</style>
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../bootstrap3/jquery-3.6.2.main.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/all.css">
+    <script type="text/javascript">
+
+
+    $(function () {
+        $("#header").load("components/header.html")
+        $("#nav").load("components/nav.html")
+        $("#footer").load("components/footer.html")
+
+    })
+
+
+
+    //刪除個案
+    function delclint(uid) {
+        if (confirm("確定刪除嗎？")){
+            $.ajax({
+                url: "/clint/deleteClint",
+                type: "post",
+                data: "uid=" + uid,
+                dataType: "json",
+                success:function (res) {
+                    alert("删除成功")
+                    location.reload();
+                },
+                error:function (error) {
+                    alert("删除失败")
+                }
+            })
+        }
+
+
+    }
+    //修改個案資料(1)獲得需要的個案
+    function updateclint(uid) {
+        $.ajax({
+            url : "/clint/queryClintByUid",
+            type: "get",
+            dataType: "json",
+            data: "uid=" + uid,
+            success:function (res) {
+                if(res.status === 200){
+                    $(".uptherapy").prop("checked",false)
+                    $("#upuid").val(res.data.uid)
+                    $("#upname").val(res.data.name)
+                    if (res.data.gender === 0){
+                        $("#upgender0").prop("checked","checked")
+                    }else {
+                        $("#upgender1").prop("checked","checked")
+                    }
+                    $("#upage").val(res.data.age)
+                    $("#upphone").val(res.data.phone)
+                    $("#upbirth").val(res.data.birth)
+                    $("#upemail").val(res.data.email)
+                    $("#upsymptom").val(res.data.symptom)
+                    if (res.data.therapyOt === 0){
+                        $("#therapy_ot").prop("checked","checked")
+                    }
+                    if (res.data.therapyPt === 0){
+                        $("#therapy_pt").prop("checked","checked")
+                    }
+                    if (res.data.therapySt === 0){
+                        $("#therapy_st").prop("checked","checked")
+                    }
+
+                }
+
+            },
+            error:function (error) {
+            }
+        })
+
+    }
+    //修改個案資料(2)修改選取個案資料
+    function update() {
+
+        var therapy = $(".uptherapy");
+        for (let i = 0; i < therapy.length; i++) {
+            if(therapy[i].checked){
+                therapy[i].value = 0;
+            }else {
+                therapy[i].value = 1;
+            }
+        }
+
+        $.ajax({
+            url : "/clint/updateClint",
+            type: "post",
+            dataType: "json",
+            data: $(".updateClint").serialize(),
+            success: function (res) {
+                if (res.status === 200){
+                    alert("修改成功")
+                    createClint();
+                }
+            },
+            error: function (error) {
+                alert("服務器出現故障"+error.status)
+            }
+        })
+
+    }
+
+
+
+
+    //搜尋個案
+    function createClint(){
+            $.ajax({
+                url : "/clint/searchClint",
+                type: "get",
+                dataType: "json",
+                success: function (res) {
+                    if (res.data.length !== 0){
+                        $("#clint-list").empty();
+                        for (let i = 0; i < res.data.length; i++) {
+                            let str = "";
+                            let clint = res.data[i]
+                            let idNum = i;
+                            let ot = clint.therapyOt;
+                            let pt = clint.therapyPt;
+                            let st = clint.therapySt;
+
+                            switch (ot) {
+                                case 1 : ot="N";
+                                break;
+                                case 0 : ot="Y";
+                            }
+                            switch (pt) {
+                                case 1 : pt="N";
+                                    break;
+                                case 0 : pt="Y";
+                            }
+                            switch (st) {
+                                case 1 : st="N";
+                                    break;
+                                case 0 : st="Y";
+                            }
+
+                            str ="<tr>" +
+                                "<td id='uid'>"+ clint.uid +"</td>" +
+                                "<td id='name'>"+ clint.name +"</td>" +
+                                "<td id='gender'>"+ clint.gender +"</td>" +
+                                "<td id='age'>"+ clint.age +"</td>" +
+                                "<td id='birth'>"+ clint.birth +"</td>" +
+                                "<td id='phone'>"+ clint.phone +"</td>" +
+                                "<td id='email'>"+ clint.email +"</td>" +
+                                "<td id='symptom'>"+ clint.symptom +"</td>" +
+                                "<td id='ot'>"+ ot +"</td>" +
+                                "<td id='pt'>"+ pt +"</td>" +
+                                "<td id='st'>"+ st +"</td>" +
+                                "<td>"+
+                                "<button type='button' id='deltbtn' onclick='delclint(#{createId})'>刪除</button>" +
+                                "<button type='button' id='updattbtn' onclick='updateclint(#{updateclint})'>修改</button>" +
+                                "</td>" +
+                                "</tr>"
+
+                            str = str.replaceAll("#{createId}",clint.uid)
+                            str = str.replaceAll("#{updateclint}",clint.uid)
+                            $("#clint-list").append(str)
+
+                        }
+
+                    }
+                },
+                error: function (error) {
+                    alert("查詢失敗")
+                }
+            })
+    }
+
+
+
+    </script>
+</head>
+<body>
+<div id="header">
+
+</div>
+
+<div id="nav">
+
+
+</div>
+
+<div id="section">
+    搜尋：<input type="button" id="findClint" value="搜尋" onclick="createClint()">
+
+
+
+
+    <form id="daily-form">
+        <table class="clint-table" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>姓名</th>
+                    <th>性別</th>
+                    <th>年齡</th>
+                    <th>生日</th>
+                    <th>電話</th>
+                    <th>信箱</th>
+                    <th>症狀</th>
+                    <th>OT</th>
+                    <th>PT</th>
+                    <th>ST</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="clint-list">
+            <!--     等待資料填入           -->
+            </tbody>
+        </table>
+    </form>
+
+    <form class="updateClint">
+        <table class="update-clint-table" width="100%">
+            <div>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>姓名</th>
+                    <th colspan="2">性別</th>
+                    <th>年齡</th>
+                    <th>生日</th>
+                    <th>電話</th>
+                    <th>信箱</th>
+                    <th>症狀</th>
+                    <th colspan="3">治療</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+
+                <tbody id="update-clint-list">
+                        <tr>
+                            <td><input id="upuid" type="text" name="uid" disabled="true"></td>
+                            <td><input id="upname"type="text" name="name"></td>
+                            <td><input id="upgender1"type="radio" name="gender" value="1">男</td>
+                            <td><input id="upgender0"type="radio" name="gender" value="0">女</td>
+                            <td><input id="upage"type="text" name="age" disabled="true"></td>
+                            <td><input id="upbirth"type="date" name="birth"></td>
+                            <td><input id="upphone"type="text" name="phone"></td>
+                            <td><input id="upemail"type="text" name="email"></td>
+                            <td><input id="upsymptom"type="text" name="symptom"></td>
+                            <td><input type="checkbox" class="uptherapy" id="therapy_ot" name="therapyOt" value="1">職能治療</td>
+                            <td><input type="checkbox" class="uptherapy" id="therapy_pt" name="therapyPt" value="1">物理治療</td>
+                            <td><input type="checkbox" class="uptherapy" id="therapy_st" name="therapySt" value="1">語言治療</td>
+                            <td><button type="button"  onclick="update()">修改按鈕</button></td>
+                        </tr>
+                </tbody>
+            </div>
+        </table>
+    </form>
+</div>
+
+<div id="footer">
+
+</div>
+
+</body>
+</html>

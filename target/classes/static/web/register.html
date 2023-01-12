@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>註冊</title>
+    <script src="../bootstrap3/jquery-3.6.2.main.js"></script>
+</head>
+        <script>
+
+            $(function () {
+
+                doregister();
+            })
+
+
+            function doregister(){
+                $("#login-register").click(function () {
+                    let username = $("#username").val();
+                    let pwd = $("#password").val();
+                    let Cpwd = $("#checkpassword").val();
+
+                    if (username === "" || pwd === "" || Cpwd === "" ){
+                        $("#error-msg").text("請填寫完註冊訊息喔！");
+                        return false;
+                    }
+
+                    let nameCheck = /^\w{5,12}$/;
+                    if(!(nameCheck.test(username))){
+                        $("#error-msg").text("用戶名要在 5-12位字母或數字！");
+                        return false;
+                    }else {
+                        $("#error-msg").empty()
+                    }
+
+                    let pasCheck = /^\w{5,12}$/;
+                    if(!(pasCheck.test(pwd))){
+                        $("#error-msg").text("密碼要在 5-12位字母或數字！");
+                        return false;
+                    }else {
+                        $("#error-msg").empty()
+                    }
+
+
+                    if (Cpwd !== pwd){
+                        $("#error-msg").text("密碼不一致");
+                        return false;
+                    }else {
+                        $("#error-msg").empty()
+                    }
+                    $.ajax({
+                        url : "/user/reg",
+                        type: "post",
+                        data: $("#register-form").serialize(), //获取表单的所有内容
+                        dataType: "json",
+                        success: function (res) {
+                            if (res.status === 200){
+                                alert("注册成功！")
+                                location.href = "login.html"
+                            }else {
+                                $("#error-msg").html(res.message)
+                            }
+                        },
+                        error: function (error) {
+                            alert(error.status)
+                        }
+                    })
+                })
+            }
+        </script>
+<body>
+        <div class="register-box">
+            <div>
+                <form id="register-form">
+                    <div id="error-msg"  style="color: red;font-weight:bold;padding-top: 10px"  class="pull-right">
+                    </div>
+                    輸入帳號<input type="text" id="username" name="username"><br>
+                    輸入密碼<input type="text" id="password" name="password"><br>
+                    確認密碼<input type="text" id="checkpassword"><br>
+                    電話號碼<input type="text" id="phone" name="phone"><br>
+                    性別<input type="radio" id="gender" name="gender" value="0">女
+                        <input type="radio" id="gender" name="gender" value="1">男<br>
+                    信箱<input type="text" id="email" name="email"><br>
+                </form>
+                <br>
+                <button id="login-register">點擊註冊</button>
+            </div>
+        </div>
+</body>
+</html>

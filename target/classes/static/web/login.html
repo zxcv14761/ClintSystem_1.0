@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登錄</title>
+    <script src="../bootstrap3/jquery-3.6.2.main.js"></script>
+</head>
+                <script>
+                  $(function () {
+                      doLogin();
+                      doRegister();
+                  })
+                  function doRegister(){
+                      $("#login-register").click(function () {
+                          window.location.href = "register.html"
+                      })
+                  }
+
+                  function doLogin() {
+                      $("#login-btn").click(function () {
+                          console.log(111)
+                          $.ajax({
+                              url: "/user",
+                              type: "post",
+                              data: $("#login-form").serialize(), //获取表单的所有内容
+                              dataType: "json",
+                              success: function (res) {
+                                  if (res.status === 200) {
+                                      alert("登錄成功！");
+                                      window.location.href="index.html";
+                                      sessionStorage.setItem("user",JSON.stringify(res.data));
+                                  }else {
+                                      alert(res.message)
+                                  }
+                              },
+                              error: function (error) {
+                                  alert(error.status)
+                              }
+                          })
+                      })
+                  }
+                </script>
+
+
+<body>
+            <div class="login-box">
+                <div>
+                    <form id="login-form">
+                        輸入帳號<input type="text" name="username"><br>
+                        輸入密碼<input type="text" name="password"><br>
+                    </form>
+                    <br>
+                    <button id="login-btn">點擊登入</button>
+                    <button id="login-register">點擊註冊</button>
+                </div>
+            </div>
+
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/MyManage?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 12345678
+
+mybatis:
+  type-aliases-package: com.ya666.Pojo
+  mapper-locations: classpath:ya666/Mapper/*.xml
+  configuration:
+        #开启在mybatis处理过程中打印出对应的sql语句功能
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+          #开启数据库字段自动转换为驼峰命名
+    map-underscore-to-camel-case: true
+
+pagehelper:
+  dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+
+

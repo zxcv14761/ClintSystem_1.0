@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../bootstrap3/jquery-3.6.2.main.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/all.css">
+    <script type="text/javascript">
+
+    $(function () {
+        $("#header").load("components/header.html")
+        $("#nav").load("components/nav.html")
+        $("#footer").load("components/footer.html")
+
+         checktherapy()
+         doAddClint()
+    })
+
+    //治療內容選取
+    function checktherapy(){
+        $("#btn").click(function () {
+            var therapy = $(".therapy");
+            for (let i = 0; i < therapy.length; i++) {
+                if(therapy[i].checked){
+                    therapy[i].value = 0;
+                }else {
+                    therapy[i].value = 1;
+                }
+            }
+        })
+    }
+
+    function doAddClint(){
+        $("#btn").click(function () {
+            $.ajax({
+                url : "/clint/addClint",
+                type: "post",
+                data: $("#clint-form-add").serialize(), //获取表单的所有内容
+                dataType: "json",
+                success: function (res) {
+                    if (res.status === 200){
+                        alert("新增成功！")
+                    }else {
+                        alert(res.message)
+                    }
+                },
+                error: function (error) {
+                    alert(error.status)
+                }
+            })
+        })
+    }
+
+
+
+    </script>
+</head>
+<body>
+<div id="header">
+
+</div>
+
+<div id="nav">
+
+
+</div>
+
+<div id="section">
+    <div class="clint-form-add" >
+        <form id="clint-form-add">
+            姓名<input type="text" name="name" name="name"><br>
+
+            男<input type="radio" id="男" name="gender" value="1">
+            女<input type="radio" id="女" name="gender" value="0"><br>
+
+            生日<input type="date" id="birth" name="birth"><br>
+            電話<input type="text" id="phone" name="phone"><br>
+            信箱<input type="text" id="email" name="email"><br>
+
+            <input type="checkbox" class="therapy" id="therapy_ot" name="therapyOt" value="1">職能治療
+            <input type="checkbox" class="therapy" id="therapy_pt" name="therapyPt" value="1">物理治療
+            <input type="checkbox" class="therapy" id="therapy_st" name="therapySt" value="1">語言治療<br>
+
+            症狀類型<input type="text" id="symptom" name="symptom"><br>
+        </form>
+        <button type="button" id="btn" >提交</button>
+    </div>
+
+</div>
+
+<div id="footer">
+
+</div>
+
+</body>
+</html>

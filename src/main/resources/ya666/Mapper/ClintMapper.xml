@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ya666.Mapper.ClintMapper">
+
+    <resultMap id="clint" type="com.ya666.Pojo.Clint">
+        <id property="uid" column="uid"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="age" column="age"/>
+        <result property="birth" column="birth"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="therapyPt" column="therapy_pt"/>
+        <result property="therapySt" column="therapy_st"/>
+        <result property="therapyOt" column="therapy_ot"/>
+        <result property="dailyNote" column="daily_note"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="symptom" column="symptom"/>
+        <result property="createUser" column="created_user"/>
+        <result property="createTime" column="created_time"/>
+        <result property="modifieUser" column="modified_user"/>
+        <result property="modifieTime" column="modified_time"/>
+    </resultMap>
+    <insert id="addClint">
+        insert into clint_account(
+                    `name`, gender,age,birth, phone, email,
+                    therapy_pt, therapy_st, therapy_ot,
+                    symptom, daily_note, is_delete,
+                    create_user, create_time, modified_user, modified_time)
+            VALUE(
+                      #{name},#{gender},#{age},#{birth},#{phone},#{email},
+                      #{therapyPt},#{therapySt},#{therapyOt},#{symptom},
+                      #{dailyNote},#{isDelete},#{createUser},#{createTime},
+                      #{modifieUser},#{modifieTime}
+            )
+    </insert>
+    <select id="queryClintByName" resultMap="clint">
+        select * from clint_account where `name` = #{name}
+    </select>
+    <select id="queryClint" resultType="clint">
+        select  * from clint_account where is_delete = 0
+    </select>
+    <select id="queryClintByUid" resultMap="clint">
+        select * from clint_account where uid = #{uid}
+    </select>
+
+    <select id="queryClintDailyByUid" resultType="com.ya666.Vo.ClintVo">
+        select c.uid,c.name , c.gender , c.age , d.ot_daily , d.pt_daily , d.st_daily ,d.id, c.symptom,d.create_time
+            from clint_account c left join dailynote d
+            on c.uid = d.uid
+            where c.uid = #{uid}
+
+
+    </select>
+    <select id="queryClintBy" resultType="clint">
+        select uid,name,gender,age,birth,symptom,therapy_ot,therapy_pt,therapy_st
+        from clint_account
+        where name like concat('%',#{name},'%') and therapy_ot = #{therapyOt} and therapy_pt = #{therapyPt} and therapy_st = #{therapySt}
+    </select>
+
+
+    <update id="delClintByUid">
+        update clint_account set is_delete = 1 where uid = #{uid}
+    </update>
+
+    <update id="updateClint">
+        update clint_account set
+            `name` = #{name},
+            gender = #{gender},
+            age = #{age},
+            birth = #{birth},
+            phone = #{phone},
+            email = #{email},
+            therapy_ot = #{therapyOt},
+            therapy_pt = #{therapyPt},
+            therapy_st = #{therapySt},
+            symptom = #{symptom}
+        where uid = #{uid}
+
+
+    </update>
+</mapper>

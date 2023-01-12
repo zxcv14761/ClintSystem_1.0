@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<style type="text/css">
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    table,
+    td {
+        border: 1px solid #333;
+
+    }
+
+    thead,
+    tfoot {
+        background-color: #333;
+        color: #fff;
+    }
+    .clint-table{
+        width: 800px;
+
+    }
+
+</style>
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../bootstrap3/jquery-3.6.2.main.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/all.css">
+    <script type="text/javascript">
+
+
+    $(function () {
+        $("#header").load("components/header.html")
+        $("#nav").load("components/nav.html")
+        $("#footer").load("components/footer.html")
+
+
+    })
+
+    //治療內容選取
+    function checktherapy(){
+        $("#btn").click(function () {
+            var therapy = $(".therapy");
+            for (let i = 0; i < therapy.length; i++) {
+                if(therapy[i].checked){
+                    therapy[i].value = 0;
+                }else {
+                    therapy[i].value = 1;
+                }
+            }
+        })
+    }
+
+    function doAddClint(){
+        $("#btn").click(function () {
+            $.ajax({
+                url : "/clint/addClint",
+                type: "post",
+                data: $("#clint-form").serialize(), //获取表单的所有内容
+                dataType: "json",
+                success: function (res) {
+                    if (res.status === 200){
+                        alert("新增成功！")
+                    }else {
+                        alert(res.message)
+                    }
+                },
+                error: function (error) {
+                    alert(error.status)
+                }
+            })
+        })
+    }
+
+
+
+    </script>
+</head>
+<body>
+<div id="header">
+
+</div>
+
+<div id="nav">
+
+
+</div>
+
+<div id="section">
+    搜尋：<input type="text" id="findClint" name="findClint">
+
+
+
+
+    <form id="daily-form">
+        <table class="clint-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>姓名</th>
+                    <th>年齡</th>
+                    <th>OT</th>
+                    <th>PT</th>
+                    <th>ST</th>
+                    <th colspan="2">操作</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>100</td>
+                    <td>葉上</td>
+                    <td>24</td>
+                    <td>Y</td>
+                    <td>Y</td>
+                    <td>Y</td>
+                    <td><button onclick="updateClint()">修改</button></td>
+                    <td><button onclick="removeClint()">刪除</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <label for="daily">DailyNote</label>
+        <textarea id="daily" name="dailynote" rows="10" cols="33"></textarea>
+
+    </form>
+    <button type="button" id="btn" >提交</button>
+</div>
+
+<div id="footer">
+
+</div>
+
+</body>
+</html>

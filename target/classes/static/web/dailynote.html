@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../bootstrap3/jquery-3.6.2.main.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/all.css">
+    <link rel="stylesheet" type="text/css" href="../css/table.css">
+    <script type="text/javascript">
+
+
+
+
+
+    $(function () {
+        $("#header").load("components/header.html")
+        $("#nav").load("components/nav.html")
+        $("#footer").load("components/footer.html")
+    })
+
+    //提交daily
+    function otdailysubmit() {
+         let cid = $("#duid").val();
+        $.ajax({
+            url: "/daily/OtDailySubmit",
+            type: "post",
+            dataType: "json",
+            data: {
+                uid : cid,
+                otDaily : $("#otDaily").val()
+            },
+            success: function (res) {
+                if(res.status === 200){
+                    alert("新增成功")
+                }
+            },
+            error: function (err) {
+                alert(err)
+            }
+        })
+    }
+    function ptdailysubmit() {
+        let cid = $("#duid").val();
+        $.ajax({
+            url: "/daily/OtDailySubmit",
+            type: "post",
+            dataType: "json",
+            data: {
+                uid : cid,
+                ptDaily : $("#ptDaily").val()
+            },
+            success: function (res) {
+                if(res.status === 200){
+                    alert("新增成功")
+                }
+            },
+            error: function (err) {
+                alert(err)
+            }
+        })
+    }
+    function stdailysubmit() {
+        let cid = $("#duid").val();
+        $.ajax({
+            url: "/daily/OtDailySubmit",
+            type: "post",
+            dataType: "json",
+            data: {
+                uid : cid,
+                stDaily : $("#stDaily").val()
+            },
+            success: function (res) {
+                if(res.status === 200){
+                    alert("新增成功")
+                }
+            },
+            error: function (err) {
+                alert(err)
+            }
+        })
+    }
+
+    //修改daily
+    function otdailymodify() {
+
+        let dailyid = $("#DailyId").val()
+
+        $.ajax({
+            url: "/daily/DailyModify",
+            type: "post",
+            dataType: "json",
+            data: {
+                id : dailyid,
+                otDaily : $("#otDaily").val()
+            },
+            success: function (res) {
+                if(res.status === 200){
+                    alert("修改成功")
+                }
+            },
+            error: function (err) {
+                alert(err)
+            }
+        })
+
+    }
+    function ptdailymodify() {
+
+        let dailyid = $("#DailyId").val()
+
+        $.ajax({
+            url: "/daily/DailyModify",
+            type: "post",
+            dataType: "json",
+            data: {
+                id : dailyid,
+                ptDaily : $("#ptDaily").val()
+            },
+            success: function (res) {
+                if(res.status === 200){
+                    alert("修改成功")
+                }
+            },
+            error: function (err) {
+                alert(err)
+            }
+        })
+
+    }
+    function stdailymodify() {
+
+        let dailyid = $("#DailyId").val()
+
+        $.ajax({
+            url: "/daily/DailyModify",
+            type: "post",
+            dataType: "json",
+            data: {
+                id : dailyid,
+                stDaily : $("#stDaily").val()
+            },
+            success: function (res) {
+                if(res.status === 200){
+                    alert("修改成功")
+                }
+            },
+            error: function (err) {
+                alert(err)
+            }
+        })
+
+    }
+
+
+    //查看個案daily
+    function findclintDaily(id){
+
+        $.ajax({
+            url : "/daily/queryClintDailyById",
+            type: "get",
+            dataType: "json",
+            data: "id=" + id,
+            success: function (res){
+                if (res.status === 200){
+                    // $("#daily").empty()
+                    $("#otDaily").val(res.data.otDaily)
+                    $("#ptDaily").val(res.data.ptDaily)
+                    $("#stDaily").val(res.data.stDaily)
+                    $("#DailyId").val(id)
+                }
+            }
+        })
+
+
+    }
+
+
+
+
+    //判斷治療給日誌匡
+    function thisclint(uid) {
+        $("#otDaily").val("")
+        $("#ptDaily").val("")
+        $("#stDaily").val("")
+
+        $.ajax({
+            url : "/clint/queryClintDailyByUid",
+            type: "get",
+            dataType: "json",
+            data: "uid=" + uid,
+            success: function (res) {
+                if (res.status === 200){
+                    $("#duid").val(res.data[0].uid)
+                    $("#dname").val(res.data[0].name)
+                    $("#dgender").val(res.data[0].gender)
+                    $("#dage").val(res.data[0].age)
+                    $("#dsymptom").val(res.data[0].symptom)
+
+                    if (res.data.length !== 0){
+                        $("#date-resource").empty()
+                        for (let i = 0; i < res.data.length; i++) {
+
+                            let str = "";
+                            let date = res.data[i]
+                            let time = date.createTime.slice(0,10)
+
+                            if (date.otDaily !== null && date.otDaily !== ""){
+                                var therapy = "ot";
+                            }else if (date.ptDaily !== null && date.ptDaily !== ""){
+                                var therapy = "pt";
+                            }else {
+                                 var therapy = "st";
+                            }
+
+
+                            str="<tr>" +
+                                "<td>"+ date.id +"</td>" +
+                                "<td>"+ time +"</td>" +
+                                "<td>"+ therapy +"</td>" +
+                                "<td>" +
+                                "<button type='button' onclick='findclintDaily(#{updateclint})'>查看</button>" +
+                                "</td>" +
+                                "</tr>"
+
+                            str = str.replaceAll("#{updateclint}",date.id)
+                            $("#date-resource").append(str)
+                        }
+                    }
+                }
+            },
+            error: function (error) {
+                alert("查詢失敗")
+            }
+        })
+    }
+
+
+    //搜尋個案
+    function createClint(){
+            $.ajax({
+                url : "/clint/searchClint",
+                type: "get",
+                dataType: "json",
+                success: function (res) {
+                    if (res.data.length !== 0){
+                        $("#clint-list").empty();
+                        for (let i = 0; i < res.data.length; i++) {
+                            let str = "";
+                            let clint = res.data[i]
+                            let idNum = i;
+                            let ot = clint.therapyOt;
+                            let pt = clint.therapyPt;
+                            let st = clint.therapySt;
+                            let birth = clint.birth.slice(0,10)
+                            let gender = clint.gender
+
+                            gender === 0? gender = "女":"男";
+                            gender === 1? gender = "男":"女";
+
+                            ot === 1? ot = "N":"Y";
+                            ot === 0? ot = "Y":"N";
+                            pt === 1? pt = "N":"Y";
+                            pt === 0? pt = "Y":"N";
+                            st === 1? st = "N":"Y";
+                            st === 0? st = "Y":"N";
+
+
+                            str ="<tr>" +
+                                "<td id='uid'>"+ clint.uid +"</td>" +
+                                "<td id='name'>"+ clint.name +"</td>" +
+                                "<td id='gender'>"+ gender +"</td>" +
+                                "<td id='age'>"+ clint.age +"</td>" +
+                                "<td id='birth'>"+ birth +"</td>" +
+                                "<td id='symptom'>"+ clint.symptom +"</td>" +
+                                "<td id='ot'>"+ ot +"</td>" +
+                                "<td id='pt'>"+ pt +"</td>" +
+                                "<td id='st'>"+ st +"</td>" +
+                                "<td>"+
+                                "<button type='button' id='creatbtn' onclick='thisclint(#{createId})'>選擇</button>" +
+                                "</td>" +
+                                "</tr>"
+
+
+                            str = str.replaceAll("#{createId}",clint.uid)
+                            $("#clint-list").append(str)
+                        }
+                    }
+                },
+                error: function (error) {
+                    alert("查詢失敗")
+                }
+            })
+    }
+
+
+
+    //帶條件搜尋個案
+    function createClintByName(){
+
+        var therapy = $(".therapy");
+        for (let i = 0; i < therapy.length; i++) {
+            if(therapy[i].checked){
+                therapy[i].value = 0;
+            }else {
+                therapy[i].value = 1;
+            }
+        }
+        var clintName = $("#createClint").val();
+            $.ajax({
+                url : "/clint/searchClintBy",
+                type: "get",
+                dataType: "json",
+                data: {"name":clintName,"therapyOt":$("#check_therapy_ot").val(),"therapyPt":$("#check_therapy_pt").val(),"therapySt":$("#check_therapy_st").val()},
+                success: function (res) {
+                    if (res.data.length == 0){
+
+                        $("#clint-list").empty();
+                        str ="<tr>" +
+                            "<td colspan='10'>"+"<font style='color: red'>"+ "查無此個案!!!!!!" +"</font>"+"</td>" +
+                            "</tr>"
+
+                        $("#clint-list").append(str)
+                    }
+                    if (res.data.length !== 0){
+                        $("#clint-list").empty();
+                        for (let i = 0; i < res.data.length; i++) {
+                            let str = "";
+                            let clint = res.data[i]
+                            let ot = clint.therapyOt;
+                            let pt = clint.therapyPt;
+                            let st = clint.therapySt;
+
+
+                            ot === 1? ot = "N":"Y";
+                            ot === 0? ot = "Y":"N";
+                            pt === 1? pt = "N":"Y";
+                            pt === 0? pt = "Y":"N";
+                            st === 1? st = "N":"Y";
+                            st === 0? st = "Y":"N";
+
+
+                            str ="<tr>" +
+                                "<td id='uid'>"+ clint.uid +"</td>" +
+                                "<td id='name'>"+ clint.name +"</td>" +
+                                "<td id='gender'>"+ clint.gender +"</td>" +
+                                "<td id='age'>"+ clint.age +"</td>" +
+                                "<td id='birth'>"+ clint.birth +"</td>" +
+                                "<td id='symptom'>"+ clint.symptom +"</td>" +
+                                "<td id='ot'>"+ ot +"</td>" +
+                                "<td id='pt'>"+ pt +"</td>" +
+                                "<td id='st'>"+ st +"</td>" +
+                                "<td>"+
+                                "<button type='button' id='creatbtn' onclick='thisclint(#{createId})'>選擇</button>" +
+                                "</td>" +
+                                "</tr>"
+
+
+                            str = str.replaceAll("#{createId}",clint.uid)
+                            $("#clint-list").append(str)
+                        }
+                    }
+                },
+                error: function (error) {
+                    alert("查詢失敗")
+                }
+            })
+    }
+
+
+
+
+    </script>
+</head>
+<body>
+<div id="header">
+
+</div>
+
+<div id="nav">
+
+
+</div>
+
+<div id="section">
+    <input type="button" id="findClint" value="搜尋" onclick="createClint()">
+    搜尋框：<input type="text" id="createClint">
+    <input type="button" id="createClint-btn" value="搜尋" onclick="createClintByName()">
+    <input type="checkbox" class="therapy" id="check_therapy_ot" name="therapyOt" value="1">職能治療
+    <input type="checkbox" class="therapy" id="check_therapy_pt" name="therapyPt" value="1">物理治療
+    <input type="checkbox" class="therapy" id="check_therapy_st" name="therapySt" value="1">語言治療<br>
+
+
+
+
+
+
+    <form id="daily-form">
+        <table class="clint-table" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>姓名</th>
+                    <th>性別</th>
+                    <th>年齡</th>
+                    <th>生日</th>
+                    <th>症狀</th>
+                    <th>OT</th>
+                    <th>PT</th>
+                    <th>ST</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="clint-list">
+
+            </tbody>
+        </table>
+    </form>
+
+
+    <form class="clintDaily">
+        <div class="daily" id="base-resource">
+            ID<input type="text" id="duid" name="uid" disabled="true">
+            姓名<input type="text" id="dname" name="name" disabled="true">
+            性別<input type="text" id="dgender" name="gender" disabled="true">
+            年齡<input type="text" id="dage" name="age" disabled="true">
+            症狀<input type="text" id="dsymptom" name="symptom" disabled="true">
+        </div>
+        <div class="daily">
+            <table id="clint-date-resource">
+                <thead>
+                    <tr>
+                        <th>編號</th>
+                        <th>時間</th>
+                        <th>類別</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody  id="date-resource">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="daily">
+            <div id="otDaily-div">
+                <p><label for="daily">OT</label></p>
+                <textarea id="otDaily" name="otDaily" rows="10" cols="33" style="width: 500px"></textarea>
+                <input type="hidden" id="DailyId">
+                <button type="button" id="ot-daily-btn" onclick="otdailysubmit()">提交</button>
+                <button type="button" id="ot-daily-modify-btn" onclick="otdailymodify()">修改</button>
+            </div>
+            <div id="ptDaily-div">
+                <p><label for="daily">PT</label></p>
+                <textarea id="ptDaily" name="ptDaily" rows="10" cols="33"style="width: 500px"></textarea><br>
+                <button type="button" id="pt-daily-btn" onclick="ptdailysubmit()">提交</button>
+                <button type="button" id="pt-daily-modify-btn" onclick="ptdailymodify()">修改</button>
+            </div>
+            <div id="stDaily-div">
+                <p><label for="daily">ST</label></p>
+                <textarea id="stDaily" name="stDaily" rows="10" cols="33"style="width: 500px"></textarea>
+                <button type="button" id="st-daily-btn"onclick="stdailysubmit()" >提交</button>
+                <button type="button" id="st-daily-modify-btn" onclick="stdailymodify()">修改</button>
+            </div>
+        </div>
+    </form>
+
+
+
+
+
+</div>
+
+<div id="footer">
+
+</div>
+
+</body>
+</html>

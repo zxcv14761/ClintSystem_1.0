@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ya666.Mapper.DailyMapper">
+    
+    <resultMap id="daily" type="com.ya666.Pojo.DailyNote">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="otDaily" column="ot_daily"/>
+        <result property="ptDaily" column="pt_daily"/>
+        <result property="stDaily" column="st_daily"/>
+        <result property="createUser" column="created_user"/>
+        <result property="createTime" column="created_time"/>
+        <result property="modifieUser" column="modified_user"/>
+        <result property="modifieTime" column="modified_time"/>
+    </resultMap>
+
+    <insert id="OtDailySubmit">
+        insert into dailynote (
+                               uid,ot_daily,pt_daily,st_daily,
+                               create_user,create_time,
+                               modified_user,modified_time
+                    )
+                    value (
+                               #{uid},#{otDaily},#{ptDaily},#{stDaily},#{createUser},#{createTime},#{modifieUser},#{modifieTime}
+                    )
+    </insert>
+    <update id="DailyModify">
+        update dailynote
+        set ot_daily = #{otDaily},pt_daily = #{ptDaily},st_daily = #{stDaily},modified_user = #{modifieUser},modified_time = #{modifieTime}
+        where id = #{id}
+    </update>
+
+    <select id="findDailyNote" resultMap="daily">
+        select * from dailynote where id = #{uid}
+    </select>
+
+
+</mapper>
