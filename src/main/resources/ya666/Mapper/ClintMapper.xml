@@ -76,7 +76,9 @@
             therapy_ot = #{therapyOt},
             therapy_pt = #{therapyPt},
             therapy_st = #{therapySt},
-            symptom = #{symptom}
+            symptom = #{symptom},
+            modified_user = #{modifieUser},
+            modified_time = #{modifieTime}
         where uid = #{uid}
 
 
