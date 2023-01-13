@@ -50,7 +50,7 @@
                     $.ajax({
                         url : "/user/reg",
                         type: "post",
-                        data: $("#register-form").serialize(), //获取表单的所有内容
+                        data: $("#register-form").serialize(),
                         dataType: "json",
                         success: function (res) {
                             if (res.status === 200){

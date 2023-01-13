@@ -22,7 +22,13 @@ tfoot {
 }
 .daily{
     width: 100px;
+    float: left;
 }
 #clint-date-resource{
     width: 250px;
+    margin-left: 80px;
+    margin-top: 30px;
+}
+.therapydaily{
+    margin-left: 600px;
 }

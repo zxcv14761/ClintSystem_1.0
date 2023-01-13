@@ -1,15 +1,14 @@
 #nav {
     line-height:30px;
     background-color:#eeeeee;
-    height:800px;
+    height:1100px;
     width:100px;
     float:left;
-    padding:5px;
 }
 #section {
+    min-height: 100%;
     width:700px;
     float:left;
-    padding:10px;
 }
 #footer {
     background-color:black;
