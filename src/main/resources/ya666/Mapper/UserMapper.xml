@@ -27,8 +27,8 @@
                         create_user,phone,email,gender
         ) VALUE(
             #{username},#{password},#{salt},#{isDelete},
-                #{createdTime},#{createdUser},#{modifiedTime},
-                #{modifiedUser},#{phone},#{email},#{gender}
+                #{createTime},#{createUser},#{modifieTime},
+                #{modifieUser},#{phone},#{email},#{gender}
             )
     </insert>
 

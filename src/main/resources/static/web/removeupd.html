@@ -59,7 +59,7 @@
             $.ajax({
                 url : "/clint/addClint",
                 type: "post",
-                data: $("#clint-form").serialize(), //获取表单的所有内容
+                data: $("#clint-form").serialize(),
                 dataType: "json",
                 success: function (res) {
                     if (res.status === 200){
