@@ -16,9 +16,9 @@ mybatis:
   type-aliases-package: com.ya666.Pojo
   mapper-locations: classpath:ya666/Mapper/*.xml
   configuration:
-        #开启在mybatis处理过程中打印出对应的sql语句功能
+        #開啟在mybatis處理過程中打印出對應的sql語句功能
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-          #开启数据库字段自动转换为驼峰命名
+          #數據庫字段自動駝峰命名
     map-underscore-to-camel-case: true
 
 pagehelper:
